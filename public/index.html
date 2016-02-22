@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html ng-app="proyecto">
+	<head>
+		
+		<title>Proyecto 608</title>
+		<meta charset="utf-8">
+		<!--Import Google Icon Font-->
+		<link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+		<!--Import materialize.css-->
+		<link type="text/css" rel="stylesheet" href="css/materialize.min.css"  media="screen,projection"/>
+		<!--Let browser know website is optimized for mobile-->
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<!--Import jQuery before materialize.js-->
+		<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+		<script type="text/javascript" src="js/materialize.min.js"></script>
+		
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
+		<script src="controllers.js"></script>
+		<script src="http://cdnjs.cloudflare.com/ajax/libs/angular-poller/0.4.2/angular-poller.js"></script>
+		<script src="https://code.angularjs.org/1.5.0/angular-resource.js"></script>
+		<style type="text/css">
+		header, main, footer {
+			padding-left: 300px;
+		}
+		@media only screen and (max-width : 992px) {
+			header, main, footer {
+				padding-left: 0;
+			}
+		}
+		.perfil{
+			width: 150px;
+			height: 150px;
+			margin: 20px;
+			border-radius: 50%;
+			display: block;
+			margin-left: auto;
+			margin-right: auto;
+			margin-top:50px; ;
+		}
+		.item{
+			text-align: right;
+		}
+		.container{
+			margin-top: 50px;
+		}
+		.commentText{
+			padding: 1px;
+		}
+		.likebutton{
+			text-align: center;
+			margin: auto;
+		}
+		.inline{
+			display: inline;
+		}
+		</style>
+	</head>
+	<body ng-controller="controller">
+		
+		<nav>
+			<header>
+				<div class="nav-wrapper center-align">
+					<a href="#!" class="brand-logo ">Proyecto 608</a>
+					
+				</div>
+			</header>
+			<ul id="slide-out" class="side-nav fixed">
+				<li><img class="perfil"src="perfil.png"></li>
+				<li><a href="">Mi perfil</a></li>
+				<li><a href="#!">Configuración</a></li>
+				<li><a href="">Salir</a></li>
+			</ul>
+			<a href="#" data-activates="slide-out" class="button-collapse"><i class="mdi-navigation-menu"></i></a>
+		</nav>
+		<script >
+		  $(document).ready(function() {
+    $('select').material_select();
+  });
+		$('.button-collapse').sideNav({
+		menuWidth: 300, // Default is 240
+		}
+		);
+		</script>
+		<main>
+		<div class="container">
+			<!-- Page Content goes here -->
+
+ 	
+  
+
+
+			<div class="row">
+				<div class="input-field col s9">
+					<input id="password" type="text" ng-model="textPost.sPost" class="validate">
+					<label for="password">Realiza un Post</label>
+				</div>
+				<div class="col s3">
+					<a class="waves-effect waves-light btn" ng-click="addPost()">POST IT
+						<i class="material-icons right">send</i>
+					</a>
+				</div>
+			</div>
+<div class="row">
+	<div class="input-field col s6">
+    <select  ng-init="hours=24" ng-model="hours">
+      <option value="1">1 hora</option>
+      <option value="3">3 horas</option>
+      <option value="6">6 horas</option>
+      <option value="12">12 horas</option>
+      <option value="24" selected>1 dia</option>
+      <option value="48">2 dias</option>
+      <option value="72">3 dias</option>
+      <option value="168">7 dias</option>
+    </select>
+    <label>Duración del post</label>
+  </div>
+</div>
+			
+			
+			<ul class="collection" ng-repeat="post in posts track by $index ">
+				
+				
+				<li class="collection-item" ng-init="limiteComentarios[post.id_post]=false">
+					{{post.sPost}}
+					<p><strong>Por: {{post.userPost}}</strong> - {{post.iRestante+ " horas restantes."}}</p>
+				</li>
+				<li class="collection-item item valign-wrapper">
+					<img src="./emojis/1.png" height="30" width="30">
+					<a ng-click="addLike(1,posts.indexOf(post), post.id_post)"class="waves-effect black-text text grey lighten-2 btn">
+						
+						<strong>{{post.like1}} </strong>
+					</a>
+					<img src="./emojis/2.png" height="30" width="30">
+					<a ng-click="addLike(2,posts.indexOf(post), post.id_post)" class="waves-effect black-text text grey lighten-2 btn">
+						
+						<strong>{{post.like2}} </strong>
+					</a>
+					<img src="./emojis/3.png" height="30" width="30">
+					<a ng-click="addLike(3,posts.indexOf(post), post.id_post)" class="waves-effect black-text text grey lighten-2 btn">
+						
+						<strong>{{post.like3}} </strong>
+					</a>
+					<img src="./emojis/4.png" height="30" width="30">
+					<a ng-click="addLike(4,posts.indexOf(post), post.id_post)" class="waves-effect black-text text grey lighten-2 btn">
+						
+						<strong>{{post.like4}} </strong>
+					</a>
+					<img src="./emojis/5.png" height="30" width="30">
+					<a ng-click="addLike(5,posts.indexOf(post), post.id_post)" class="waves-effect black-text text grey lighten-2 btn">
+						
+						<strong>{{post.like5}} </strong>
+					</a>
+				</li>
+				<li class="collection-item" ng-show="post.Comentarios != NULL"><strong>Comentarios:</strong></li>
+				<li class="collection-item" ng-show="limiteComentarios[post.id_post]==(false||NULL||'undefined')  && post.Comentarios.length >2" >
+					<a href="" ng-click="limiteComentarios[post.id_post]=true">Cargar mas comentarios:</a>
+				</li>
+				<li class="collection-item" ng-show="limiteComentarios[post.id_post]==true && post.Comentarios.length >2">
+					<a href="" ng-click="limiteComentarios[post.id_post]=false">Ocultar comentarios:</a>
+				</li>
+				<li class="collection-item" ng-show="(limiteComentarios[post.id_post] == false || NULL || 'undefined')" ng-repeat="comentario in post.Comentarios | limitTo:2 track by $index " >
+					<div >
+						<strong>{{"-"+comentario.userCom+": "}}</strong>{{comentario.sComentario}}
+					</div>
+				</li>
+				<li class="collection-item" ng-show="(limiteComentarios[post.id_post] == true)" ng-repeat="comentario in post.Comentarios track by $index" >
+					<div >
+						<strong>{{"-"+comentario.userCom+": "}}</strong>{{comentario.sComentario}}
+					</div>
+				</li>
+				<li>
+					<div class="input-field col s12 commentText">
+						<input id="comment" type="text" ng-model="array[post.id_post]" class="validate">
+						<label for="comment" >Realiza un Comentario</label>
+					</div>
+					<a class="waves-effect waves-light btn" ng-click="addComment(post.id_post,posts.indexOf(post))">
+						<i class="material-icons right">send</i>
+						{{console.log("Comentarios")}}
+					</a>
+				</li>
+			</ul>
+		</div>
+		</main>
+	</body>
+</html>
