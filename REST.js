@@ -6,7 +6,7 @@ function REST_ROUTER(api_router, connection, md5) {
     self.handleRoutes(api_router, connection, md5);
 }
 
-REST_ROUTER.prototype.handleRoutes = function(api_router, connection, md5) {
+REST_ROUTER.prototype.handleRoutes = function(api_router, connection, md5, session) {
     var self = this;
     api_router.get("/", function(req, res) {
         res.json({
@@ -30,15 +30,15 @@ REST_ROUTER.prototype.handleRoutes = function(api_router, connection, md5) {
                 res.json({
                     "Error": false,
                     "Message": "Success",
-                    "Item sales": rows
+                    "Users": rows
                 });
             }
         });
     });
 
-    api_router.get("/users/:id_user", function(req, res) {
-        var query = "SELECT * FROM ?? WHERE ??=?";
-        var table = ["users", "id_user", req.params.id_item_sale];
+    api_router.get("/users/id", function(req, res) {
+        var query = "SELECT id_user, sName, sEmail, sPerfil  FROM ?? WHERE ??=?";
+        var table = ["users", "id_user", req.session.userid];
         query = mysql.format(query, table);
         connection.query(query, function(err, rows) {
             if (err) {
@@ -50,7 +50,7 @@ REST_ROUTER.prototype.handleRoutes = function(api_router, connection, md5) {
                 res.json({
                     "Error": false,
                     "Message": "Success",
-                    "Item sale": rows
+                    "User": rows
                 });
             }
         });
@@ -94,8 +94,9 @@ REST_ROUTER.prototype.handleRoutes = function(api_router, connection, md5) {
 
 
 
-        var query = "SELECT hour(TIMEDIFF(p.fVencimiento, CURRENT_TIMESTAMP())) AS iRestante, p.id_post, p.id_user, p.sPost, p.fFecha, p.fVencimiento, (SELECT COUNT(*) FROM likes WHERE i_type = 1 AND id_post = p.id_post) AS like1, (SELECT COUNT(*) FROM likes WHERE i_type = 2 AND id_post = p.id_post) AS like2, (SELECT COUNT(*) FROM likes WHERE i_type = 3 AND  id_post = p.id_post) AS like3, (SELECT COUNT(*) FROM likes WHERE i_type = 4 AND id_post = p.id_post) AS like4, (SELECT COUNT(*)FROM likes WHERE i_type = 5 AND id_post = p.id_post) AS like5, IFNULL(l.i_type,0) AS 'Likes:userType', c.id_comentario AS 'Comentarios:id_comentario', c.sComentario AS 'Comentarios:sComentario', c.id_user AS 'Comentarios:id_user', u1.sName AS userPost, u2.sName AS 'Comentarios:userCom' FROM posts p LEFT JOIN comentarios c ON p.id_post = c.id_post INNER JOIN users u1 ON p.id_user = u1.id_user LEFT JOIN users u2 ON c.id_user = u2.id_user LEFT JOIN likes l ON p.id_post = l.id_post AND l.id_user = 1 WHERE NOW() BETWEEN p.fFecha AND p.fVencimiento ORDER BY p.id_post DESC, c.id_comentario";
-
+        var query = "SELECT hour(TIMEDIFF(p.fVencimiento, CURRENT_TIMESTAMP())) AS iRestante, p.id_post, p.id_user, p.sPost, p.fFecha, p.fVencimiento, (SELECT COUNT(*) FROM likes WHERE i_type = 1 AND id_post = p.id_post) AS like1, (SELECT COUNT(*) FROM likes WHERE i_type = 2 AND id_post = p.id_post) AS like2, (SELECT COUNT(*) FROM likes WHERE i_type = 3 AND  id_post = p.id_post) AS like3, (SELECT COUNT(*) FROM likes WHERE i_type = 4 AND id_post = p.id_post) AS like4, (SELECT COUNT(*)FROM likes WHERE i_type = 5 AND id_post = p.id_post) AS like5, IFNULL(l.i_type,0) AS 'Likes:userType', c.id_comentario AS 'Comentarios:id_comentario', c.sComentario AS 'Comentarios:sComentario', c.id_user AS 'Comentarios:id_user', u1.sName AS userPost, u2.sName AS 'Comentarios:userCom' FROM posts p LEFT JOIN comentarios c ON p.id_post = c.id_post INNER JOIN users u1 ON p.id_user = u1.id_user LEFT JOIN users u2 ON c.id_user = u2.id_user LEFT JOIN likes l ON p.id_post = l.id_post AND l.id_user = ? WHERE NOW() BETWEEN p.fFecha AND p.fVencimiento ORDER BY p.id_post DESC, c.id_comentario";
+        var table = [req.session.userid];
+        query = mysql.format(query, table);
 
         //var table = ["posts"];
         //query = mysql.format(query,table);
@@ -116,15 +117,64 @@ REST_ROUTER.prototype.handleRoutes = function(api_router, connection, md5) {
         });
     });
 
-
-
-    api_router.get("/posts/:id_post", function(req, res) {
+    api_router.put("/posts/delete", function(req, res) {
         res.header("Access-Control-Allow-Origin", "*");
         res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
         res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
         res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
-        var query = "SELECT * FROM ?? WHERE ??=?";
-        var table = ["posts", "id_post", req.params.id_post];
+        var query = "UPDATE posts SET fVencimiento = '0000-00-00 00:00:00' WHERE id_post = ? AND id_user = ?";
+        var table = [req.body.id_post, req.session.userid];
+        query = mysql.format(query, table);
+        connection.query(query, function(err, rows) {
+            if (err) {
+                res.json({
+                    "Error": true,
+                    "Message": "Error executing MySQL query" + err
+                });
+            } else {
+
+
+                res.json({
+                    "Posts": rows
+                });
+
+            }
+        });
+    });
+
+    api_router.post("/comentarios/delete", function(req, res) {
+        res.header("Access-Control-Allow-Origin", "*");
+        res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+        res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+        res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+        var query = "DELETE FROM comentarios WHERE id_comentario = ? AND id_user = ?";
+        var table = [req.body.id_comentario, req.session.userid];
+        query = mysql.format(query, table);
+        connection.query(query, function(err, rows) {
+            if (err) {
+                res.json({
+                    "Error": true,
+                    "Message": "Error executing MySQL query" + err
+                });
+            } else {
+
+
+                res.json({
+                    "Posts": rows
+                });
+
+            }
+        });
+    });
+
+
+    api_router.get("/posts/id", function(req, res) {
+        res.header("Access-Control-Allow-Origin", "*");
+        res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+        res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+        res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+        var query = "SELECT * FROM posts WHERE id_user=?";
+        var table = [req.session.userid];
         query = mysql.format(query, table);
         connection.query(query, function(err, rows) {
             if (err) {
@@ -147,7 +197,7 @@ REST_ROUTER.prototype.handleRoutes = function(api_router, connection, md5) {
         res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
         var query = "INSERT INTO ??(??,??,??) VALUES (?,?,DATE_ADD(CURRENT_TIMESTAMP, INTERVAL ? HOUR))";
         var table = ["posts", "id_user", "sPost", "fVencimiento",
-            req.body.id_user, req.body.sPost, req.body.fVencimiento
+            req.session.userid, req.body.sPost, req.body.fVencimiento
         ];
         query = mysql.format(query, table);
         connection.query(query, function(err, rows) {
@@ -174,7 +224,7 @@ REST_ROUTER.prototype.handleRoutes = function(api_router, connection, md5) {
         res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
         var query = "INSERT INTO ??(??,??,??) VALUES (?,?,?)";
         var table = ["comentarios", "id_post", "id_user", "sComentario",
-            req.body.id_post, req.body.id_user, req.body.sComentario
+            req.body.id_post, req.session.userid, req.body.sComentario
         ];
         query = mysql.format(query, table);
         connection.query(query, function(err, rows) {
@@ -193,7 +243,7 @@ REST_ROUTER.prototype.handleRoutes = function(api_router, connection, md5) {
             }
         });
     });
-/*
+    /*
 CREATE PROCEDURE addLike(user_id INT, post_id INT, type_i INT) BEGIN DELETE FROM likes WHERE id_user = user_id; INSERT INTO likes (id_post,i_type,id_user) VALUES (post_id,type_i,user_id); END
  */
     api_router.post("/likes/add", function(req, res) {
@@ -202,7 +252,7 @@ CREATE PROCEDURE addLike(user_id INT, post_id INT, type_i INT) BEGIN DELETE FROM
         res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
         res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
         var query = "CALL addLike(?,?,?)";
-        var table = [req.body.id_user, req.body.id_post, req.body.i_type];
+        var table = [req.session.userid, req.body.id_post, req.body.i_type];
         query = mysql.format(query, table);
         connection.query(query, function(err, rows) {
             if (err) {
@@ -216,6 +266,37 @@ CREATE PROCEDURE addLike(user_id INT, post_id INT, type_i INT) BEGIN DELETE FROM
                 res.json({
                     "Posts": rows
                 });
+
+            }
+        });
+    });
+
+    api_router.post("/login/submit", function(req, res) {
+        res.header("Access-Control-Allow-Origin", "*");
+        res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+        res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+        res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+        var query = "SELECT id_user, bActivo FROM users WHERE UPPER(sEmail) = UPPER(?) AND sPassword = ?";
+        var table = [req.body.sEmail, req.body.sPassword];
+        query = mysql.format(query, table);
+        connection.query(query, function(err, rows) {
+            if (err) {
+                res.redirect("/")
+            } else {
+                console.log(rows);
+                if (rows.length > 0) {
+                    if (rows[0].bActivo == false) {
+                        res.redirect("/login/error/active")
+
+                    } else {
+                        req.session.userid = rows[0].id_user;
+                        res.redirect("/dashboard");
+                    }
+
+
+                } else {
+                    res.redirect("/login/error");
+                }
 
             }
         });

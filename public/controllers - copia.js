@@ -1,13 +1,12 @@
 angular.module('proyecto', ['ngResource', 'emguo.poller'])
-    .controller('controller', ['$scope', '$resource', 'poller', '$http', function($scope, $resource, poller, $http) {
+    .controller('controller', function($scope, $resource, poller, $http) {
         $scope.posts = [];
         $scope.textPost = {};
         $scope.textComentario = {};
-        
+        $scope.textPost.userPost = "Raul Lara";
 
         $scope.array = [];
         $scope.limiteComentarios = [];
-        $scope.user = [];
         var addPost = $resource("http://localhost:3000/api/posts/:id", {
             id: ''
         });
@@ -17,60 +16,7 @@ angular.module('proyecto', ['ngResource', 'emguo.poller'])
             $scope.posts = data.Posts;
         });
 
-        var req = {
-                method: 'GET',
-                url: 'http://localhost:3000/api/users/id'
-            }
 
-            $http(req).then(function successCallback(response) {
-                if(response.data.User != 'undefined'){
-                $scope.user = response.data.User[0];
-                console.log($scope.user);
-                $scope.textPost.userPost = $scope.user.sName;
-                }
-                
-            }, function errorCallback(response) {
-                console.log("Error en solicitud de USUARIO");
-            });
-
-        $scope.deleteComment = function(post,comment,idcomment){
-            console.log("WHATUP");
-            var req = {
-                method: 'POST',
-                url: 'http://localhost:3000/api/comentarios/delete',
-                data: {
-                    id_comentario: idcomment
-                }
-            }
-
-            $http(req).then(function successCallback(response) {
-               console.log("COMENTARIO ELIMINADO");
-               console.log(response);
-               console.log(idcomment)
-               $scope.posts[post].Comentarios.splice(comment,1);                 
-            }, function errorCallback(response) {
-                console.log("Error en eliminar COMENTARIO");
-            });
-
-        }
-
-        $scope.deletePost = function(post, idpost){
-            var req = {
-                method: 'PUT',
-                url: 'http://localhost:3000/api/posts/delete',
-                data: {
-                    id_post: idpost
-                }
-            }
-
-            $http(req).then(function successCallback(response) {
-               console.log("POST ELIMINADO");
-               $scope.posts.splice(post,1)                 
-            }, function errorCallback(response) {
-                console.log("Error en eliminar POST");
-            });
-
-        }    
 
         $scope.addLike = function(type, post, idpost) {
             var like = "like" + type;
@@ -81,6 +27,7 @@ angular.module('proyecto', ['ngResource', 'emguo.poller'])
                 url: 'http://localhost:3000/api/likes/add',
 
                 data: {
+                    id_user: 1,
                     id_post: idpost,
                     i_type: type
                 }
@@ -194,6 +141,7 @@ angular.module('proyecto', ['ngResource', 'emguo.poller'])
 
                 data: {
                     id_post: id,
+                    id_user: 1,
                     sComentario: comentariodb
                 }
             }
@@ -202,12 +150,12 @@ angular.module('proyecto', ['ngResource', 'emguo.poller'])
                 console.log(response);
 
                 $scope.textComentario.sComentario = $scope.array[id];
-                $scope.textComentario.userCom = $scope.user.sName;
+                $scope.textComentario.userCom = 'Raul Lara';
                 if (typeof $scope.posts[post].Comentarios == "undefined") {
 
                     $scope.posts[post].Comentarios = [];
                     $scope.textComentario.sComentario = $scope.array[id];
-                    $scope.textComentario.userCom = $scope.user.sName;
+                    $scope.textComentario.userCom = 'Raul Lara';
                     $scope.posts[post].Comentarios.push($scope.textComentario);
                     console.log("ARRAY COMMENTS NEWS")
                     console.log($scope.posts[post].Comentarios);
@@ -218,7 +166,7 @@ angular.module('proyecto', ['ngResource', 'emguo.poller'])
                 }
 
                 $scope.textPost = {
-                    autor: $scope.user.sName
+                    autor: "Raul Lara"
                 };
                 $scope.array[id] = "";
 
@@ -241,6 +189,7 @@ angular.module('proyecto', ['ngResource', 'emguo.poller'])
                 url: 'http://localhost:3000/api/posts/add',
 
                 data: {
+                    id_user: 1,
                     sPost: $scope.textPost.sPost,
                     fVencimiento: $scope.hours
                 }
@@ -252,11 +201,11 @@ angular.module('proyecto', ['ngResource', 'emguo.poller'])
                 console.log($scope.textPost)
                 $scope.posts.unshift($scope.textPost);
                 $scope.textPost = {
-                    userPost: $scope.user.sName
+                    userPost: "Raul Lara"
                 };
             }, function errorCallback(response) {
                 console.log("Error en post");
             });
 
         }
-    }]);
+    });

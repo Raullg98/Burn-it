@@ -60,21 +60,20 @@ Server.prototype.configureExpress = function(connection) {
     var api_router = express.Router();
 
     app.use('/api', api_router);
-    
 
-    var rest_router = new rest.REST_ROUTER(api_router, connection, md5);
+
+    var rest_router = new rest.REST_ROUTER(api_router, connection, md5,session);
     self.startServer();
 }
 
 Server.prototype.startServer = function() {
     app.listen(3000, function() {
-
-
-        app.use(express.static('public'));
-
-
         console.log("All right ! I am alive at Port 3000.");
     });
+    app.use(express.static('public'));
+   
+
+    
 }
 
 Server.prototype.stop = function(err) {
@@ -82,9 +81,7 @@ Server.prototype.stop = function(err) {
     process.exit(1);
 }
 
-new Server();
-
-app.use(session({
+ app.use(session({
         secret: "Proyecto608020498",
         resave: false,
         saveUninitialized: false
@@ -93,19 +90,59 @@ app.use(session({
 
 app.get("/", function(req, res) {
 
-    console.log("ENTRA A /");
-    res.sendFile(__dirname + '/public/login.html');
+        console.log("ENTRA A /");
+        if (req.session.userid !== undefined) {
+            //res.send(String(req.session.userid));
+            res.redirect("/dashboard")
+        } else {
+            
+            
+            res.sendFile(__dirname + '/public/login.html');
+        }
+        
 
-});
-app.get("/dashboard", function(req, res) {
+    });
+    app.get("/dashboard", function(req, res) {
 
-    console.log("ENTRA A /dashboard");
-    if(req.session.userid !== undefined){
-    res.send(String(req.session.userid));
-    //res.sendFile(__dirname + '/public/index.html');
-    }else{
-        req.session.userid = 1;
-        res.send(req.session.userid);
-    }
+        console.log("ENTRA A /dashboard");
+        if (req.session.userid !== undefined) {
+            //res.send(String(req.session.userid));
+            res.sendFile(__dirname + '/public/dashboard.html');
+        } else {
+            
+            
+            
+            res.redirect("/")
+        }
 
-});
+    });
+     app.get("/dashboard/perfil", function(req, res) {
+
+       
+        if (req.session.userid !== undefined) {
+            //res.send(String(req.session.userid));
+            res.sendFile(__dirname + '/public/perfil.html');
+        } else {
+            
+            
+            
+            res.redirect("/")
+        }
+
+    });
+      app.get("/dashboard/config", function(req, res) {
+
+       
+        if (req.session.userid !== undefined) {
+            //res.send(String(req.session.userid));
+            res.sendFile(__dirname + '/public/config.html');
+        } else {
+            
+            
+            
+            res.redirect("/")
+        }
+
+    });
+
+new Server();
