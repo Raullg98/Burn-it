@@ -116,12 +116,11 @@ app.get("/", function(req, res) {
         }
 
     });
-     app.get("/dashboard/perfil", function(req, res) {
+    app.get("/perfil", function(req, res) {
 
        
         if (req.session.userid !== undefined) {
-            //res.send(String(req.session.userid));
-            res.sendFile(__dirname + '/public/perfil.html');
+            res.redirect("/perfil/"+req.session.userid)
         } else {
             
             
@@ -130,7 +129,7 @@ app.get("/", function(req, res) {
         }
 
     });
-      app.get("/dashboard/config", function(req, res) {
+      app.get("/config", function(req, res) {
 
        
         if (req.session.userid !== undefined) {
@@ -145,4 +144,32 @@ app.get("/", function(req, res) {
 
     });
 
+
+app.get("/dashboard/", function(req, res) {
+
+       
+       app.redirect("/dashboard");
+    });
+app.get("/perfil/:id", function(req, res) {
+
+       
+       if (req.session.userid !== undefined) {
+            //res.send(String(req.session.userid));
+            res.sendFile(__dirname + '/public/cperfil2.html');
+        } else {         
+            res.redirect("/")
+        }
+    });
+app.get("/logout", function(req, res) {
+
+       
+       if (req.session.userid !== undefined) {
+            //res.send(String(req.session.userid));
+            req.session.destroy(function(err) {
+                res.redirect("/");
+            })
+        } else {         
+            res.redirect("/")
+        }
+    });
 new Server();

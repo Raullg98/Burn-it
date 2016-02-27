@@ -37,8 +37,28 @@ REST_ROUTER.prototype.handleRoutes = function(api_router, connection, md5, sessi
     });
 
     api_router.get("/users/id", function(req, res) {
-        var query = "SELECT id_user, sName, sEmail, sPerfil  FROM ?? WHERE ??=?";
+        var query = "SELECT id_user, sName, sEmail, sDesc, sPerfil  FROM ?? WHERE ??=?";
         var table = ["users", "id_user", req.session.userid];
+        query = mysql.format(query, table);
+        connection.query(query, function(err, rows) {
+            if (err) {
+                res.json({
+                    "Error": true,
+                    "Message": "Error executing MySQL query" + err
+                });
+            } else {
+                res.json({
+                    "Error": false,
+                    "Message": "Success",
+                    "User": rows
+                });
+            }
+        });
+    });
+
+        api_router.get("/users/perfil/:id", function(req, res) {
+        var query = "SELECT sName, sPerfil, sDesc, fNacimiento  FROM ?? WHERE ??=?";
+        var table = ["users", "id_user", req.params.id];
         query = mysql.format(query, table);
         connection.query(query, function(err, rows) {
             if (err) {
@@ -117,6 +137,45 @@ REST_ROUTER.prototype.handleRoutes = function(api_router, connection, md5, sessi
         });
     });
 
+api_router.get("/posts/perfil/:id_user", function(req, res) {
+        res.header("Access-Control-Allow-Origin", "*");
+        res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+        res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+        res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+
+
+
+        var options = {
+            sql: 'SELECT DATEDIFF( p.fVencimiento, CURRENT_TIMESTAMP())24 AS iRestante, p.id_post, p.id_user, p.sPost, p.fFecha, p.fVencimiento,c.sComentario, c.id_comentario, c.id_user AS id_userc, u1.sName AS userPost, u2.sName AS userCom FROM posts p LEFT JOIN comentarios c ON p.id_post = c.id_post INNER JOIN users u1 ON p.id_user = u1.id_user LEFT JOIN users u2 ON  c.id_user = u2.id_user WHERE CURRENT_TIMESTAMP() BETWEEN p.fFecha AND p.fVencimiento ORDER BY p.id_post DESC, c.id_comentario',
+            nestTables: true
+        };
+
+
+
+
+        var query = "SELECT hour(TIMEDIFF(p.fVencimiento, CURRENT_TIMESTAMP())) AS iRestante, p.id_post, p.id_user, p.sPost, p.fFecha, p.fVencimiento, (SELECT COUNT(*) FROM likes WHERE i_type = 1 AND id_post = p.id_post) AS like1, (SELECT COUNT(*) FROM likes WHERE i_type = 2 AND id_post = p.id_post) AS like2, (SELECT COUNT(*) FROM likes WHERE i_type = 3 AND  id_post = p.id_post) AS like3, (SELECT COUNT(*) FROM likes WHERE i_type = 4 AND id_post = p.id_post) AS like4, (SELECT COUNT(*)FROM likes WHERE i_type = 5 AND id_post = p.id_post) AS like5, IFNULL(l.i_type,0) AS 'Likes:userType', c.id_comentario AS 'Comentarios:id_comentario', c.sComentario AS 'Comentarios:sComentario', c.id_user AS 'Comentarios:id_user', u1.sName AS userPost, u2.sName AS 'Comentarios:userCom' FROM posts p LEFT JOIN comentarios c ON p.id_post = c.id_post INNER JOIN users u1 ON p.id_user = u1.id_user LEFT JOIN users u2 ON c.id_user = u2.id_user LEFT JOIN likes l ON p.id_post = l.id_post AND l.id_user = ?  WHERE p.id_user = ? AND NOW() BETWEEN p.fFecha AND p.fVencimiento ORDER BY p.id_post DESC, c.id_comentario";
+        var table = [req.session.userid, req.params.id_user];
+        query = mysql.format(query, table);
+
+        //var table = ["posts"];
+        //query = mysql.format(query,table);
+        connection.query(query, function(err, rows) {
+            if (err) {
+                res.json({
+                    "Error": true,
+                    "Message": "Error executing MySQL query" + err
+                });
+            } else {
+
+                var tPosts = new Treeize();
+                tPosts.grow(rows);
+                res.json({
+                    "Posts": tPosts.data.tree
+                });
+            }
+        });
+    });
+
     api_router.put("/posts/delete", function(req, res) {
         res.header("Access-Control-Allow-Origin", "*");
         res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
@@ -173,7 +232,7 @@ REST_ROUTER.prototype.handleRoutes = function(api_router, connection, md5, sessi
         res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
         res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
         res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
-        var query = "SELECT * FROM posts WHERE id_user=?";
+        var query = "SELECT * FROM posts WHERE id_user=? ORDER BY fFecha DESC";
         var table = [req.session.userid];
         query = mysql.format(query, table);
         connection.query(query, function(err, rows) {

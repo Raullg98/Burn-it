@@ -7,17 +7,19 @@
 		<!--Import Google Icon Font-->
 		<link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 		<!--Import materialize.css-->
-		<link type="text/css" rel="stylesheet" href="css/materialize.min.css"  media="screen,projection"/>
+		<link type="text/css" rel="stylesheet" href="/css/materialize.min.css"  media="screen,projection"/>
 		<!--Let browser know website is optimized for mobile-->
 		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 		<!--Import jQuery before materialize.js-->
 		<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-		<script type="text/javascript" src="js/materialize.min.js"></script>
+		<script type="text/javascript" src="/js/materialize.min.js"></script>
 		
 		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
-		<script src="controllers.js"></script>
+		<script src="/controllers-perfil.js"></script>
 		<script src="http://cdnjs.cloudflare.com/ajax/libs/angular-poller/0.4.2/angular-poller.js"></script>
 		<script src="https://code.angularjs.org/1.5.0/angular-resource.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.0/angular-route.min.js"></script>
+		<base  target="_self" href="/">
 		<style type="text/css">
 		header, main, footer {
 			padding-left: 300px;
@@ -30,6 +32,16 @@
 		.perfil{
 			width: 150px;
 			height: 150px;
+			margin: 20px;
+			border-radius: 50%;
+			display: block;
+			margin-left: auto;
+			margin-right: auto;
+			margin-top:50px; ;
+		}
+		.perfil2{
+			width: 170px;
+			height: 170px;
 			margin: 20px;
 			border-radius: 50%;
 			display: block;
@@ -60,66 +72,44 @@
 	</head>
 	<body ng-controller="controller" class=" grey lighten-3">
 		
-		<nav  class="orange darken-3">
+		<nav class="orange darken-3">
 			<header>
-				<div class="nav-wrapper center-align">
-					<a href="/dashboard" class="brand-logo ">Burn it!</a>
+				<div class="nav-wrapper center-align ">
+					<a href="/dashboard" target="_self" class="brand-logo ">Burn it!</a>
 					
 				</div>
 			</header>
 			<ul id="slide-out" class="side-nav fixed">
-
 				<li><img class="perfil" ng-src="/images/perfil/{{user.sPerfil}}"></li>
 				<li><a href="">{{user.sName}}</a></li>
-				<li><a href="/dashboard">Dashboard</a></li>
-				<li><a href="/perfil">Mi perfil</a></li>
-				<li><a href="/config">Configuración</a></li>
-				<li><a ng-href="/logout">Salir</a></li>
+				<li><a href="/dashboard" target="_self">Dashboard</a></li>
+				<li><a href="/perfil" target="_self">Mi perfil</a></li>
+				
+				<li><a href="/config" target="_self">Configuración</a></li>
+				<li><a ng-href="/logout" target="_self">Salir</a></li>
 			</ul>
 			<a href="#" data-activates="slide-out" class="button-collapse"><i class="mdi-navigation-menu"></i></a>
 		</nav>
-		<script >
-		$(document).ready(function() {
-		$('select').material_select();
-		});
-		$('.button-collapse').sideNav({
-		menuWidth: 300, // Default is 240
-		}
-		);
-		</script>
 		<main>
 		<div class="container">
 			<!-- Page Content goes here -->
-			
-			
 			<div class="row">
 				<div class="col s12">
 					<div class="card-panel">
-						<div class="card-content">
-							
-							<div class="input-field  s9">
-								<input id="password" type="text" ng-model="textPost.sPost" class="validate">
-								<label for="password">Realiza un Post</label>
+						
+						
+						<div class="row">
+							<div class="col s4">
+								<img class="perfil2 s6" ng-src="/images/perfil/{{perfil.sPerfil}}">
 							</div>
-							<div class="input-field  s6">
-								<select  ng-init="hours=24" ng-model="hours">
-									<option value="1">1 hora</option>
-									<option value="3">3 horas</option>
-									<option value="6">6 horas</option>
-									<option value="12">12 horas</option>
-									<option value="24" selected>1 dia</option>
-									<option value="48">2 dias</option>
-									<option value="72">3 dias</option>
-									<option value="168">7 dias</option>
-								</select>
-								<label>Duración del post</label>
+							<div class="col s8">
+								<h5>{{perfil.sName}}</h5>
+								<strong><p class="black-text">Descripcion</p></strong>
+								<p class="black-text">{{perfil.sDesc}}
+								</p>
 							</div>
-							<div class=" s3">
-								<a class="waves-effect waves-light btn" ng-click="addPost()">POST IT
-									<i class="material-icons right">send</i>
-								</a>
-							</div>											
 						</div>
+						
 					</div>
 				</div>
 			</div>
@@ -185,7 +175,8 @@
 								<strong> <a href="/perfil/{{comentario.id_user}}">{{"-"+comentario.userCom+": "}}</a></strong>{{comentario.sComentario}}
 							</div>
 						</li>
-						<li>
+						<li >
+							
 							<div class="input-field col s12 commentText">
 								<input id="comment" type="text" ng-model="array[post.id_post]" class="validate">
 								<label for="comment" >Realiza un Comentario</label>
@@ -202,5 +193,16 @@
 		
 	</div>
 	</main>
+	<script >
+	$(document).ready(function() {
+	$('select').material_select();
+	});
+	$('.button-collapse').sideNav({
+	menuWidth: 300, // Default is 240
+	}
+	);
+	</script>
+	<div ng-view>
+	</div>
 </body>
 </html>

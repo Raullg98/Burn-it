@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html ng-app="proyecto">
+	<head>
+		
+		<title>Proyecto 608</title>
+		<meta charset="utf-8">
+		<!--Import Google Icon Font-->
+		<link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+		<!--Import materialize.css-->
+		<link type="text/css" rel="stylesheet" href="../css/materialize.min.css"  media="screen,projection"/>
+		<!--Let browser know website is optimized for mobile-->
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<!--Import jQuery before materialize.js-->
+		<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+		<script type="text/javascript" src="../js/materialize.min.js"></script>
+		
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
+		<script src="../cperfil.js"></script>
+		<script src="http://cdnjs.cloudflare.com/ajax/libs/angular-poller/0.4.2/angular-poller.js"></script>
+		<script src="https://code.angularjs.org/1.5.0/angular-resource.js"></script>
+		<style type="text/css">
+		header, main, footer {
+			padding-left: 300px;
+		}
+		@media only screen and (max-width : 992px) {
+			header, main, footer {
+				padding-left: 0;
+			}
+		}
+		.perfil{
+			width: 150px;
+			height: 150px;
+			margin: 20px;
+			border-radius: 50%;
+			display: block;
+			margin-left: auto;
+			margin-right: auto;
+			margin-top:50px; ;
+		}
+		.item{
+			text-align: right;
+		}
+		.container{
+			margin-top: 50px;
+		}
+		.commentText{
+			padding: 1px;
+		}
+		.likebutton{
+			text-align: center;
+			margin: auto;
+		}
+		.inline{
+			display: inline;
+		}
+		</style>
+	</head>
+	<body ng-controller="controller">
+		
+		<nav>
+			<header>
+				<div class="nav-wrapper center-align">
+					<a href="/dashboard" class="brand-logo ">Proyecto 608</a>
+					
+				</div>
+			</header>
+			<ul id="slide-out" class="side-nav fixed">
+				<li><img class="perfil"src="../perfil.png"></li>
+				<li><a href="/perfil">Mi perfil</a></li>
+				<li><a href="/config">Configuración</a></li>
+				<li><a href="">Salir</a></li>
+			</ul>
+			<a href="#" data-activates="slide-out" class="button-collapse"><i class="mdi-navigation-menu"></i></a>
+		</nav>
+		<script >
+		$(document).ready(function() {
+		$('select').material_select();
+		});
+		$('.button-collapse').sideNav({
+		menuWidth: 300, // Default is 240
+		}
+		);
+		</script>
+		<main>
+		<div class="container">
+			<!-- Page Content goes here -->
+			
+			
+			<h5>Perfil - {{user.sName}}</h5>
+			<p>Tus posts:</p>			
+			<ul class="collection" ng-repeat="post in posts track by $index">
+				
+				
+				<li class="collection-item" ng-init="limiteComentarios[post.id_post]=false">
+					{{post.sPost}}
+					<p><strong>Realizado el dia: </strong> {{post.fFecha}}
+						
+					</p>
+				</li>
+				
+			</ul>
+		</div>
+		</main>
+	</body>
+</html>

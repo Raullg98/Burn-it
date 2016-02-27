@@ -1,0 +1,78 @@
+<main>
+		<div class="container">
+			<!-- Page Content goes here -->
+			
+			
+		<div class="row">
+			
+		</div>
+			
+			
+			<ul class="collection" ng-repeat="post in posts track by $index ">
+				
+				
+				<li class="collection-item" ng-init="limiteComentarios[post.id_post]=false">
+					{{post.sPost}}
+					<p><strong>Por: {{post.userPost}}</strong> - {{post.iRestante+ " horas restantes."}}
+						<a href="#" ng-show="post.id_user == user.id_user" ng-click="deletePost(posts.indexOf(post), post.id_post)">Eliminar post</a>
+					</p>
+				</li>
+				<li class="collection-item item valign-wrapper">
+					<img src="./emojis/1.png" height="30" width="30">
+					<a ng-click="addLike(1,posts.indexOf(post), post.id_post)"class="waves-effect black-text text grey lighten-2 btn">
+						
+						<strong>{{post.like1}} </strong>
+					</a>
+					<img src="./emojis/2.png" height="30" width="30">
+					<a ng-click="addLike(2,posts.indexOf(post), post.id_post)" class="waves-effect black-text text grey lighten-2 btn">
+						
+						<strong>{{post.like2}} </strong>
+					</a>
+					<img src="./emojis/3.png" height="30" width="30">
+					<a ng-click="addLike(3,posts.indexOf(post), post.id_post)" class="waves-effect black-text text grey lighten-2 btn">
+						
+						<strong>{{post.like3}} </strong>
+					</a>
+					<img src="./emojis/4.png" height="30" width="30">
+					<a ng-click="addLike(4,posts.indexOf(post), post.id_post)" class="waves-effect black-text text grey lighten-2 btn">
+						
+						<strong>{{post.like4}} </strong>
+					</a>
+					<img src="./emojis/5.png" height="30" width="30">
+					<a ng-click="addLike(5,posts.indexOf(post), post.id_post)" class="waves-effect black-text text grey lighten-2 btn">
+						
+						<strong>{{post.like5}} </strong>
+					</a>
+				</li>
+				<li class="collection-item" ng-show="post.Comentarios != NULL"><strong>Comentarios:</strong></li>
+				<li class="collection-item" ng-show="(limiteComentarios[post.id_post]== false && post.Comentarios.length>2) || (limiteComentarios[post.id_post]== undefined && post.Comentarios.length > 2) " >
+					<a href="" ng-click="limiteComentarios[post.id_post]=true">Cargar mas comentarios:</a>
+				</li>
+				<li class="collection-item" ng-show="limiteComentarios[post.id_post]==true && post.Comentarios.length >2">
+					<a href="" ng-click="limiteComentarios[post.id_post]=false">Ocultar comentarios:</a>
+				</li>
+				<li class="collection-item" ng-show="(limiteComentarios[post.id_post]== false) || (limiteComentarios[post.id_post]== undefined)" ng-repeat="comentario in post.Comentarios | limitTo:2 track by $index " >
+					<div >
+						<a href="" ng-show="post.id_user == user.id_user"  ng-click="deleteComment(posts.indexOf(post),comentarios.indexOf(comentario),comentario.id_comentario)">X</a>
+						<strong>{{"-"+comentario.userCom+": "}}</strong>{{comentario.sComentario}}
+					</div>
+				</li>
+				<li class="collection-item" ng-show="(limiteComentarios[post.id_post] == true)" ng-repeat="comentario in post.Comentarios track by $index" >
+					<div >
+						<a href="" ng-show="post.id_user == user.id_user" ng-click="deleteComment(posts.indexOf(post),comentarios.indexOf(comentario),comentario.id_comentario)">X</a>
+						<strong>{{"-"+comentario.userCom+": "}}</strong>{{comentario.sComentario}}
+					</div>
+				</li>
+				<li>
+					<div class="input-field col s12 commentText">
+						<input id="comment" type="text" ng-model="array[post.id_post]" class="validate">
+						<label for="comment" >Realiza un Comentario</label>
+					</div>
+					<a class="waves-effect waves-light btn" ng-click="addComment(post.id_post,posts.indexOf(post))">
+						<i class="material-icons right">send</i>
+						{{console.log("Comentarios")}}
+					</a>
+				</li>
+			</ul>
+		</div>
+		</main>
