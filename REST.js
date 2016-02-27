@@ -37,7 +37,7 @@ REST_ROUTER.prototype.handleRoutes = function(api_router, connection, md5, sessi
     });
 
     api_router.get("/users/id", function(req, res) {
-        var query = "SELECT id_user, sName, sEmail, sDesc, sPerfil  FROM ?? WHERE ??=?";
+        var query = "SELECT id_user, sName, sEmail, fNacimiento, sDesc, iSexo, sPerfil  FROM ?? WHERE ??=?";
         var table = ["users", "id_user", req.session.userid];
         query = mysql.format(query, table);
         connection.query(query, function(err, rows) {
@@ -97,6 +97,63 @@ REST_ROUTER.prototype.handleRoutes = function(api_router, connection, md5, sessi
         });
     });
 
+    api_router.put("/users/edit/info", function(req, res) {
+        var query = "UPDATE users SET sName = ?, iSexo = ?, sDesc = ?, fNacimiento = ? WHERE id_user = ?";
+        var table = [req.body.sName, req.body.iSexo, req.body.sDesc, req.body.fNacimiento, req.session.userid];
+        query = mysql.format(query, table);
+        connection.query(query, function(err, rows) {
+            if (err) {
+                res.json({
+                    "Error": true,
+                    "Message": "Error executing MySQL query" + err
+                });
+            } else {
+                res.json({
+                    "Error": false,
+                    "Message": "Item Sale Added !"
+                });
+            }
+        });
+    });
+    api_router.put("/users/edit/email", function(req, res) {
+        var query = "UPDATE users SET sEmail = ? WHERE UPPER(sEmail) = UPPER(?) AND id_user = ?";
+        var table = [req.body.newEmail, req.body.oldEmail, req.session.userid];
+        query = mysql.format(query, table);
+        connection.query(query, function(err, rows) {
+            if (err) {
+                res.json({
+                    "Error": true,
+                    "Message": "Error executing MySQL query" + err
+                });
+            } else {
+                res.json({
+                    "Error": false,
+                    "Message": "Item Sale Added !"
+                });
+                console.log(rows);
+            }
+        });
+    });
+
+    api_router.put("/users/edit/password", function(req, res) {
+        var query = "UPDATE users SET sPassword = ? WHERE sPassword = ? AND id_user = ?";
+        var table = [req.body.newPassword, req.body.oldPassword, req.session.userid];
+        query = mysql.format(query, table);
+        connection.query(query, function(err, rows) {
+            if (err) {
+                res.json({
+                    "Error": true,
+                    "Message": "Error executing MySQL query" + err
+                });
+            } else {
+                res.json({
+                    "Error": false,
+                    "Message": "Item Sale Added !"
+                });
+            }
+        });
+    });
+
     //POSTS
     api_router.get("/posts", function(req, res) {
         res.header("Access-Control-Allow-Origin", "*");
@@ -115,6 +172,38 @@ REST_ROUTER.prototype.handleRoutes = function(api_router, connection, md5, sessi
 
 
         var query = "SELECT hour(TIMEDIFF(p.fVencimiento, CURRENT_TIMESTAMP())) AS iRestante, p.id_post, p.id_user, p.sPost, p.fFecha, p.fVencimiento, (SELECT COUNT(*) FROM likes WHERE i_type = 1 AND id_post = p.id_post) AS like1, (SELECT COUNT(*) FROM likes WHERE i_type = 2 AND id_post = p.id_post) AS like2, (SELECT COUNT(*) FROM likes WHERE i_type = 3 AND  id_post = p.id_post) AS like3, (SELECT COUNT(*) FROM likes WHERE i_type = 4 AND id_post = p.id_post) AS like4, (SELECT COUNT(*)FROM likes WHERE i_type = 5 AND id_post = p.id_post) AS like5, IFNULL(l.i_type,0) AS 'Likes:userType', c.id_comentario AS 'Comentarios:id_comentario', c.sComentario AS 'Comentarios:sComentario', c.id_user AS 'Comentarios:id_user', u1.sName AS userPost, u2.sName AS 'Comentarios:userCom' FROM posts p LEFT JOIN comentarios c ON p.id_post = c.id_post INNER JOIN users u1 ON p.id_user = u1.id_user LEFT JOIN users u2 ON c.id_user = u2.id_user LEFT JOIN likes l ON p.id_post = l.id_post AND l.id_user = ? WHERE NOW() BETWEEN p.fFecha AND p.fVencimiento ORDER BY p.id_post DESC, c.id_comentario";
+        var table = [req.session.userid];
+        query = mysql.format(query, table);
+
+        //var table = ["posts"];
+        //query = mysql.format(query,table);
+        connection.query(query, function(err, rows) {
+            if (err) {
+                res.json({
+                    "Error": true,
+                    "Message": "Error executing MySQL query" + err
+                });
+            } else {
+
+                var tPosts = new Treeize();
+                tPosts.grow(rows);
+                res.json({
+                    "Posts": tPosts.data.tree
+                });
+            }
+        });
+    });
+api_router.delete("/posts/delete/all", function(req, res) {
+        res.header("Access-Control-Allow-Origin", "*");
+        res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+        res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+        res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+
+
+
+
+
+        var query = "DELETE FROM posts WHERE id_user = ?";
         var table = [req.session.userid];
         query = mysql.format(query, table);
 

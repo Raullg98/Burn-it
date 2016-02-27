@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html ng-app="proyecto">
+	<head>
+		
+		<title>Burn it!</title>
+		<meta charset="utf-8">
+		<!--Import Google Icon Font-->
+		<link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+		<!--Import materialize.css-->
+		<link type="text/css" rel="stylesheet" href="css/materialize.min.css"  media="screen,projection"/>
+		<!--Let browser know website is optimized for mobile-->
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<!--Import jQuery before materialize.js-->
+		<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+		<script type="text/javascript" src="js/materialize.min.js"></script>
+		
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.0/angular.min.js"></script>
+		<script src="controllers-config.js"></script>
+		<script src="http://cdnjs.cloudflare.com/ajax/libs/angular-poller/0.4.2/angular-poller.js"></script>
+		<script src="https://code.angularjs.org/1.5.0/angular-resource.js"></script>
+		<style type="text/css">
+		header, main, footer {
+			padding-left: 300px;
+		}
+		@media only screen and (max-width : 992px) {
+			header, main, footer {
+				padding-left: 0;
+			}
+		}
+		.perfil{
+			width: 150px;
+			height: 150px;
+			margin: 20px;
+			border-radius: 50%;
+			display: block;
+			margin-left: auto;
+			margin-right: auto;
+			margin-top:50px; ;
+		}
+		.item{
+			text-align: right;
+		}
+		.container{
+			margin-top: 50px;
+		}
+		.commentText{
+			padding: 1px;
+		}
+		.likebutton{
+			text-align: center;
+			margin: auto;
+		}
+		.inline{
+			display: inline;
+		}
+		.border-none{
+		border: none;
+		}
+		</style>
+	</head>
+	<body ng-controller="controller" class=" grey lighten-3">
+		
+		<nav  class="orange darken-3">
+			<header>
+				<div class="nav-wrapper center-align">
+					<img src="/images/burn.png" width="45px" heigth="35px"alt="">
+					&nbsp;	
+				<a href="#" class="brand-logo ">Burn it!</a>
+					
+				</div>
+			</header>
+			<ul id="slide-out" class="side-nav fixed">
+				<li><img class="perfil" ng-src="/images/perfil/{{user.sPerfil}}"></li>
+				<li><a href="">{{::user.sName}}</a></li>
+				<li><a href="/dashboard">Dashboard</a></li>
+				<li><a href="/perfil">Mi perfil</a></li>
+				<li><a href="/config">Configuración</a></li>
+				<li><a ng-href="/logout">Salir</a></li>
+			</ul>
+			<a href="#" data-activates="slide-out" class="button-collapse"><i class="mdi-navigation-menu"></i></a>
+		</nav>
+		<script >
+		$(document).ready(function() {
+		$('select').material_select();
+		});
+		$('.button-collapse').sideNav({
+		menuWidth: 300, // Default is 240
+		}
+		);
+		</script>
+		<main>
+		<div class="container">
+			<!-- Page Content goes here -->
+			
+			
+			<div class="row">
+				<div class="col s12">
+					<div class="card-panel">
+						<div class="card-content">
+							<strong><p>Cambiar configuracion personal de tu cuenta</p></strong>
+							<p>En este apartado podrás cambiar datos personales de tu perfil como tu descripción, fecha de nacimiento, sexo etc.</p>
+							<a class="waves-effect waves-light btn modal-trigger" href="#modal1"><i class="material-icons left">perm_identity</i>Cambiar información</a>
+						</div>
+					</div>
+				</div>
+				<div class="col s12">
+					<div class="card-panel">
+						<div class="card-content">
+							<strong><p>Cambiar email</p></strong>
+							<p>Te permite realizar cambios con respecto a tu email.</p>
+							<a class="waves-effect waves-light btn modal-trigger" href="#modal2"><i class="material-icons left">email</i>Cambiar email</a>
+						</div>
+					</div>
+				</div>
+				<div class="col s12">
+					<div class="card-panel">
+						<div class="card-content">
+							<strong><p>Cambiar contraseña</p></strong>
+							<p>Podrás realizar cambios con respecto a tu contraseña, es necesario ingresar tu contraseña actual.</p>
+							<a class="waves-effect waves-light btn  modal-trigger"  href="#modal3"><i class="material-icons left">vpn_key</i>Cambiar contraseña</a>
+						</div>
+					</div>
+				</div>
+				<div class="col s12">
+					<div class="card-panel">
+						<div class="card-content">
+							<strong><p>Eliminar todos mis posts vigentes</p></strong>
+							<p>En caso de necesitar eliminar todos los posts puedes usar esta opción, le quitara vigencia a cada uno de tus posts, nadie los podrá ver, despues de eliminarnos no hay vuelta atrás.</p>
+							<a class="waves-effect waves-light btn modal-trigger"  href="#modal4"><i class="material-icons left">delete</i>Eliminar posts</a>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="modal1" class="modal modal-fixed-footer">
+				<div class="modal-content">
+					<h4>Cambiar información básica</h4>
+					<div class="row">
+						<form class="col s12">
+							<div class="row">
+								<!--
+								<div class="input-field col s12">
+									<textarea id="name" class="materialize-textarea" minlength="3" maxlength="30" ng-model="user.sName"></textarea>
+									<label for="name">Nombre</label>
+								</div>-->
+								<div class="input-field col s12">
+									<p>Nombre</p>
+									<input id="name" type="text" class="validate" minlength="3" maxlength="30" value="-"ng-model="user.sName">
+									<label for="name" class="active"></label>
+								</div>
+								<div class="input-field col s12">
+									<p>Descripcion</p>
+									<input id="desc" type="text" class="validate" maxlength="300" ng-model="user.sDesc">
+									<label for="desc"></label>
+								</div>
+								<div class="input-field col s12">
+									<select ng-model="user.iSexo">
+										<option ng-value="user.iSexo" disabled selected>Selecciona una opción</option>
+										<option value="1" >Masculino</option>
+										<option value="2">Femenino</option>
+									</select>
+									<label>Sexo</label>
+								</div>
+								<div class="input-field col s12">
+									<input id="date" type="date" class="datepicker" ng-model="user.newNacimiento">
+									<label for="date">Fecha de nacimiento</label>
+								</div>
+							</div>
+							
+							
+							
+						</form>
+					</div>
+					
+				</div>
+				<div class="modal-footer">
+					<a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat" ng-click="changeInfo()">Aceptar</a>
+					<a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Cancelar</a>
+				</div>
+
+			</div>
+			
+			<div id="modal2" class="modal modal-fixed-footer">
+				<div class="modal-content">
+					<h4>Cambiar email</h4>
+					<div class="row">
+						<form class="col s12">
+							<div class="row">
+								<!--
+								<div class="input-field col s12">
+									<textarea id="name" class="materialize-textarea" minlength="3" maxlength="30" ng-model="user.sName"></textarea>
+									<label for="name">Nombre</label>
+								</div>-->
+								<div class="input-field col s12">
+									<p>Email anterior</p>
+									<input id="email" type="email" class="validate" minlength="6" maxlength="60" value="-"ng-model="user.oldEmail">
+									<label for="name" class="active"></label>
+								</div>
+								<div class="input-field col s12">
+									<p>Nuevo email</p>
+									<input id="emailnuevo" type="email" class="validate" minlength="3"maxlength="60" ng-model="user.newEmail">
+									<label for="desc"></label>
+								</div>
+								
+							</div>
+							
+							
+							
+						</form>
+					</div>
+					
+				</div>
+				<div class="modal-footer">
+					<a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat" ng-click="changeEmail()">Aceptar</a>
+					<a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Cancelar</a>
+				</div>
+				
+			</div>
+				<div id="modal3" class="modal modal-fixed-footer">
+				<div class="modal-content">
+					<h4>Cambiar email</h4>
+					<div class="row">
+						<form class="col s12">
+							<div class="row">
+								<!--
+								<div class="input-field col s12">
+									<textarea id="name" class="materialize-textarea" minlength="3" maxlength="30" ng-model="user.sName"></textarea>
+									<label for="name">Nombre</label>
+								</div>-->
+								<div class="input-field col s12">
+									<p>Contraseña anterior</p>
+									<input id="password" type="password" class="validate" minlength="6" maxlength="50" value="-"ng-model="user.oldPassword">
+									<label for="password" class="active"></label>
+								</div>
+								<div class="input-field col s12">
+									<p>Nueva contraseña</p>
+									<input id="newpassword" type="password" class="validate" minlength="6"maxlength="50" ng-model="user.newPassword">
+									<label for="newpassword"></label>
+								</div>
+								
+							</div>
+							
+							
+							
+						</form>
+					</div>
+					
+				</div>
+				<div class="modal-footer">
+					<a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat" ng-click="changePassword()">Aceptar</a>
+					<a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Cancelar</a>
+				</div>
+				
+			</div>
+			</div>
+				<div id="modal4" class="modal modal-fixed-footer">
+				<div class="modal-content">
+					<h4>Eliminar posts</h4>
+					<div class="row">
+						<form class="col s12">
+							<div class="row">
+							<p>¿Estas seguro de borrar todos tus posts? Al pulsar en aceptar se eliminara cada uno de tus posts
+								activos, no sera posible recuperarlos.</p>
+								
+							</div>
+							
+							
+							
+						</form>
+					</div>
+					
+				</div>
+				<div class="modal-footer">
+					<a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat" ng-click="deleteAllPosts()">Aceptar</a>
+					<a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">Cancelar</a>
+				</div>
+				
+			</div>
+			<script>
+			$(document).ready(function(){
+			// the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
+			$('.modal-trigger').leanModal();
+			});
+			$('.datepicker').pickadate({
+			selectMonths: true, // Creates a dropdown to control month
+			selectYears: 100, // Creates a dropdown of 15 years to control year
+			min: undefined,
+			max: new Date(), 
+			format: 'yyyy/mm/dd'
+			});
+			</script>
+			
+			
+		</div>
+		
+		</main>
+	</body>
+</html>
