@@ -102,6 +102,20 @@ app.get("/", function(req, res) {
         
 
     });
+app.get("/register", function(req, res) {
+
+        console.log("ENTRA A /");
+        if (req.session.userid !== undefined) {
+            //res.send(String(req.session.userid));
+            res.redirect("/dashboard")
+        } else {
+            
+            
+            res.sendFile(__dirname + '/public/registro.html');
+        }
+        
+
+    });
     app.get("/dashboard", function(req, res) {
 
         console.log("ENTRA A /dashboard");
@@ -113,6 +127,17 @@ app.get("/", function(req, res) {
             
             
             res.redirect("/")
+        }
+
+    });
+    app.get("/register/success", function(req, res) {
+
+        if (req.session.userid !== undefined) {
+            //res.send(String(req.session.userid));
+            res.sendFile(__dirname + '/public/dashboard.html');
+        } else {
+            
+            res.sendFile(__dirname + '/public/login-success.html')
         }
 
     });
@@ -143,7 +168,18 @@ app.get("/", function(req, res) {
         }
 
     });
+app.get("/login/error", function(req, res) {
 
+       
+        if (req.session.userid !== undefined) {
+            //res.send(String(req.session.userid));
+            res.redirect("/")
+        } else {
+            
+            res.sendFile(__dirname + '/public/login-error.html');
+        }
+
+    });
 
 app.get("/dashboard/", function(req, res) {
 

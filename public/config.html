@@ -153,10 +153,10 @@
 									<label for="desc"></label>
 								</div>
 								<div class="input-field col s12">
-									<select ng-model="user.iSexo">
+									<select ng-model="user.iSex">
 										<option ng-value="user.iSexo" disabled selected>Selecciona una opción</option>
-										<option value="1" >Masculino</option>
-										<option value="2">Femenino</option>
+										<option ng-click="user.iSex =1" ng-selected="user.iSex == 1 " value="1" >Masculino</option>
+										<option ng-click="user.iSex =2"ng-selected="user.iSex == 2 "value="2">Femenino</option>
 									</select>
 									<label>Sexo</label>
 								</div>

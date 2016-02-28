@@ -18,8 +18,12 @@ angular.module('proyecto', ['ngResource', 'emguo.poller'])
                 console.log("Error en solicitud de USUARIO");
             });
             $scope.changeInfo = function() {
-                if (typeof $scope.user.newNacimiento !== (null || undefined || 'undefined')) {
+
+                if(typeof $scope.user.newNacimiento !== (null || undefined || 'undefined')) {
                     $scope.user.fNacimiento = $scope.user.newNacimiento;
+                }
+                if(typeof $scope.user.iSex !== (null || undefined || 'undefined')){
+                    $scope.user.iSexo = $scope.user.iSex;
                 }
                 var req = {
                     method: 'PUT',

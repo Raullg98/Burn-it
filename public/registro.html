@@ -1,102 +1,129 @@
 <!DOCTYPE HTML>
 <html>
 	<head>
-		<title></title>
+		<title>Burn it!</title>
 		<meta charset="utf-8">
 		<link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 		<!--Import materialize.css-->
-		
 		<link type="text/css" rel="stylesheet" href="css/materialize.min.css"  media="screen,projection"/>
 		<!--Let browser know website is optimized for mobile-->
 		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 		<!--Import jQuery before materialize.js-->
 		<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 		<script type="text/javascript" src="js/materialize.min.js"></script>
-		
 		<style>
-		main{
-			padding: 100px;
+			.parallax-container, .parallax {
+		height: "20px";
 		}
 		</style>
-	</head>
-	<body>
+		<script>
+		$(document).ready(function(){
+		$('.parallax').parallax();
+		});
 		
-		<nav>
-			<div class="nav-wrapper">
-				<a href="#" class="brand-logo">Proyecto608</a>
+		</script>
+	</head>
+	<body class="grey lighten-3 valign">
+		<nav class="orange darken-3">
+			<div class="nav-wrapper center-align">
+				<img src="/images/burn.png" width="45px" heigth="35px"alt="">
+				&nbsp;
+				<a href="#" class="brand-logo ">Burn it!</a>
 				
 			</div>
 		</nav>
-		<div>
-		<main>
-		<h3>Registro</h3>
-		<div class="row ">
-			<form class="col s12" action="./api/login/submit" method="post">
-				<div class="row">
-					<div class="input-field col s12">
-						<input id="name" name="sEmail" type="text" class="validate">
-						<label for="name">Nombre</label>
-					</div>
-				</div>
-				<div class="row">
-					<div class="input-field col s12">
-						<input id="email" name="sEmail" type="email" class="validate">
-						<label for="email">Email</label>
-					</div>
-				</div>
-				<div class="row">
-					<div class="input-field col s12">
-						<input id="password" name="sPassword" type="password" class="validate">
-						<label for="password">Contraseña</label>
-					</div>
-				</div>
-				<div class="row">
-					<div class="input-field col s12">
-						<input id="group" name="sEmail" type="number" class="validate" min="0">
-						<label for="group">Grupo</label>
-					</div>
-				</div>
-				<div class="row">
-					<div class="input-field col s12">
-						<input id="group" class="datepicker" name="sEmail" type="date" >
-						<label for="group">Fecha de nacimiento</label>
+		<div class="slider">
+			
+			<br><br>
+			<div class="row">
+				<form class="col s8 offset-s2" action="/api/register/submit" method="post">
+					<div class="card-panel">
+						<h5>Registro:</h5>
+						<div class="input-field  s12">
+							<input id="name" name="sName" type="text" class="validate" minlength="3">
+							<label for="name">Nombre</label>
+						</div>
 						
-				</div>
-				
-				<button class="btn waves-effect waves-light" type="submit" name="action">Submit
-				<i class="material-icons right">send</i>
-				</button>
-			</form>
-		</div>
-		</main>
+						<div class="input-field  s12">
+							<input id="email" name="sEmail" type="email" class="validate" minlength="6">
+							<label for="email">Email</label>
+						</div>
+						
+						
+						<div class="input-field  s12">
+							<input id="password" name="sPassword" type="password" class="validate" minlength="6">
+							<label for="password">Contraseña</label>
+						</div>
+						
+						<div class="input-field s12">
+							<select id="sex" name="iSexo">
+								
+								<option value="1">Masculino</option>
+								<option value="2">Femenino</option>
+							</select>
+							<label for="sex">Materialize Select</label>
+						</div>
+						
+						<div class="input-field  s12">
+							<input id="desc" name="sDesc" type="text" class="validate" min="0" maxlength="300">
+							<label for="desc">Descripción</label>
+						</div>
 
-			<footer class="page-footer">
-			<div class="container">
-				<div class="row">
-					<div class="col l6 s12">
-						<h5 class="white-text">Footer Content</h5>
-						<p class="grey-text text-lighten-4">You can use rows and columns here to organize your footer content.</p>
+						
+						<div class="input-field  s12">
+							<input id="date" class="datepicker" name="fNacimiento" type="date" >
+							<label for="date">Fecha de nacimiento</label>
+							
+						</div>
+						
+						<button class="btn waves-effect waves-light" type="submit" name="action">Submit
+						<i class="material-icons right">send</i>
+						</button>
 					</div>
-					<div class="col l4 offset-l2 s12">
-						<h5 class="white-text">Links</h5>
-						<ul>
-							<li><a class="grey-text text-lighten-3" href="#!">Link 1</a></li>
-							<li><a class="grey-text text-lighten-3" href="#!">Link 2</a></li>
-							<li><a class="grey-text text-lighten-3" href="#!">Link 3</a></li>
-							<li><a class="grey-text text-lighten-3" href="#!">Link 4</a></li>
-						</ul>
-					</div>
-				</div>
+				</form>
 			</div>
-			<div class="footer-copyright">
+			<br>
+			<footer class="page-footer orange accent-4">
 				<div class="container">
-					© 2014 Copyright Text
-					<a class="grey-text text-lighten-4 right" href="#!">More Links</a>
+					<div class="row">
+						<div class="col l6 s12">
+							<h5 class="white-text">Burn it!</h5>
+							<p class="grey-text text-lighten-4">Burn it! es una red social que te permite crear posts que
+								se autodestruiran en un tiempo determinado. Entérate de que es lo que sucede a tu
+							alrededor.</p>
+						</div>
+						<div class="col l4 offset-l2 s12">
+							<h5 class="white-text">Mas información</h5>
+							<ul>
+								<li><a class="grey-text text-lighten-3" href="#!">Email</a></li>
+								<li><a class="grey-text text-lighten-3" href="#!">Github</a></li>
+								<li><a class="grey-text text-lighten-3" href="#!">Desarrolladores</a></li>
+								<li><a class="grey-text text-lighten-3" href="#!">FAQs</a></li>
+							</ul>
+						</div>
+					</div>
 				</div>
-			</div>
-		</footer>
+				<div class="footer-copyright">
+					<div class="container">
+						© 2016 Copyright
+						
+					</div>
+				</div>
+			</footer>
+		</body>
 		<script>
-		$('.datepicker').pickadate()
+		$(document).ready(function(){
+		$('.slider').slider({full_width: true});
+		 $('select').material_select();
+		$('.datepicker').pickadate({
+				selectMonths: true, // Creates a dropdown to control month
+				selectYears: 100, // Creates a dropdown of 15 years to control year
+				min: undefined,
+				max: new Date(),
+				format: 'yyyy/mm/dd'
+				});
+		});
+		
+				
 		</script>
-	</body>
-</html>
+	</html>

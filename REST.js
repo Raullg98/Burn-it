@@ -35,6 +35,18 @@ REST_ROUTER.prototype.handleRoutes = function(api_router, connection, md5, sessi
             }
         });
     });
+     api_router.post("/register/submit", function(req, res) {
+        var query = "INSERT INTO users(sName, sEmail, sPassword,iSexo, sDesc, fNacimiento) VALUES(?,?,?,?,?,?)";
+        var table = [req.body.sName, req.body.sEmail, req.body.sPassword, req.body.iSexo, req.body.sDesc, req.body.fNacimiento];
+        query = mysql.format(query, table);
+        connection.query(query, function(err, rows) {
+            if (err) {
+                res.json({"Error":err});
+            } else {
+                res.redirect("/register/success");
+            }
+        });
+    });
 
     api_router.get("/users/id", function(req, res) {
         var query = "SELECT id_user, sName, sEmail, fNacimiento, sDesc, iSexo, sPerfil  FROM ?? WHERE ??=?";
