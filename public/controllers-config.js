@@ -4,7 +4,7 @@ angular.module('proyecto', ['ngResource', 'emguo.poller'])
             $scope.user = [];
             var req = {
                 method: 'GET',
-                url: 'http://localhost:3000/api/users/id'
+                url: '/api/users/id'
             }
             $http(req).then(function successCallback(response) {
                 try {
@@ -27,7 +27,7 @@ angular.module('proyecto', ['ngResource', 'emguo.poller'])
                 }
                 var req = {
                     method: 'PUT',
-                    url: 'http://localhost:3000/api/users/edit/info',
+                    url: '/api/users/edit/info',
                     data: {
                         sName: $scope.user.sName,
                         sDesc: $scope.user.sDesc,
@@ -48,7 +48,7 @@ angular.module('proyecto', ['ngResource', 'emguo.poller'])
             $scope.changeEmail = function() {
                 var req = {
                     method: 'PUT',
-                    url: 'http://localhost:3000/api/users/edit/email',
+                    url: '/api/users/edit/email',
                     data: {
                         oldEmail: $scope.user.oldEmail,
                         newEmail: $scope.user.newEmail
@@ -70,7 +70,7 @@ angular.module('proyecto', ['ngResource', 'emguo.poller'])
             $scope.changePassword = function() {
                 var req = {
                     method: 'PUT',
-                    url: 'http://localhost:3000/api/users/edit/password',
+                    url: '/api/users/edit/password',
                     data: {
                         oldPassword: $scope.user.oldPassword,
                         newPassword: $scope.user.newPassword
@@ -92,7 +92,7 @@ angular.module('proyecto', ['ngResource', 'emguo.poller'])
             $scope.deleteAllPosts = function() {
                 var req = {
                     method: 'DELETE',
-                    url: 'http://localhost:3000/api/posts/delete/all'
+                    url: '/api/posts/delete/all'
                 }
                 $http(req).then(function successCallback(response) {
                     try {

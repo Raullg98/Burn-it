@@ -8,7 +8,7 @@ angular.module('proyecto', ['ngResource', 'emguo.poller'])
         $scope.array = [];
         $scope.limiteComentarios = [];
         $scope.user = [];
-        var addPost = $resource("http://localhost:3000/api/posts/:id", {
+        var addPost = $resource("/api/posts/:id", {
             id: ''
         });
         var myPoller = poller.get(addPost);
@@ -19,7 +19,7 @@ angular.module('proyecto', ['ngResource', 'emguo.poller'])
 
         var req = {
                 method: 'GET',
-                url: 'http://localhost:3000/api/users/id'
+                url: '/api/users/id'
             }
 
             $http(req).then(function successCallback(response) {
@@ -37,7 +37,7 @@ angular.module('proyecto', ['ngResource', 'emguo.poller'])
             console.log("WHATUP");
             var req = {
                 method: 'POST',
-                url: 'http://localhost:3000/api/comentarios/delete',
+                url: '/api/comentarios/delete',
                 data: {
                     id_comentario: idcomment
                 }
@@ -57,7 +57,7 @@ angular.module('proyecto', ['ngResource', 'emguo.poller'])
         $scope.deletePost = function(post, idpost){
             var req = {
                 method: 'PUT',
-                url: 'http://localhost:3000/api/posts/delete',
+                url: '/api/posts/delete',
                 data: {
                     id_post: idpost
                 }
@@ -78,7 +78,7 @@ angular.module('proyecto', ['ngResource', 'emguo.poller'])
 
             var req = {
                 method: 'POST',
-                url: 'http://localhost:3000/api/likes/add',
+                url: '/api/likes/add',
 
                 data: {
                     id_post: idpost,
@@ -190,7 +190,7 @@ angular.module('proyecto', ['ngResource', 'emguo.poller'])
             var comentariodb = $scope.array[id];
             var req = {
                 method: 'POST',
-                url: 'http://localhost:3000/api/comentarios/add',
+                url: '/api/comentarios/add',
 
                 data: {
                     id_post: id,
@@ -238,7 +238,7 @@ angular.module('proyecto', ['ngResource', 'emguo.poller'])
 
             var req = {
                 method: 'POST',
-                url: 'http://localhost:3000/api/posts/add',
+                url: '/api/posts/add',
 
                 data: {
                     sPost: $scope.textPost.sPost,
