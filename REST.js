@@ -1,5 +1,6 @@
 var mysql = require("mysql");
 var Treeize = require('treeize');
+var sendgrid = require("sendgrid")("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");
 
 function REST_ROUTER(api_router, connection, md5) {
     var self = this;
@@ -35,15 +36,62 @@ REST_ROUTER.prototype.handleRoutes = function(api_router, connection, md5, sessi
             }
         });
     });
-     api_router.post("/register/submit", function(req, res) {
+    api_router.get("/activate/:id", function(req, res) {
+
+        if (req.session.userid !== undefined) {
+            //res.send(String(req.session.userid));
+            res.sendFile(__dirname + '/public/dashboard.html');
+        } else {
+            var query = "UPDATE users SET bActivo = 1 WHERE id_user = ?";
+            var table = [req.params.id];
+            query = mysql.format(query, table);
+            connection.query(query, function(err, rows) {
+                if (err) {
+                    res.json({
+                        "Error": true,
+                        "Message": "Error executing MySQL query" + err
+                    });
+                } else {
+                    res.sendFile(__dirname + '/public/login-activated.html')
+                }
+            });
+
+        }
+
+    });
+    api_router.post("/register/submit", function(req, res) {
         var query = "INSERT INTO users(sName, sEmail, sPassword,iSexo, sDesc, fNacimiento) VALUES(?,?,?,?,?,?)";
         var table = [req.body.sName, req.body.sEmail, req.body.sPassword, req.body.iSexo, req.body.sDesc, req.body.fNacimiento];
         query = mysql.format(query, table);
+        var query2 = "SELECT id_user, sEmail FROM users WHERE sEmail  = ? AND sPassword = ?";
+        var table2 = [req.body.sEmail, req.body.sPassword];
+        var query2 = mysql.format(query2, table2);
+
         connection.query(query, function(err, rows) {
             if (err) {
-                res.json({"Error":err});
+                res.json({
+                    "Error": err
+                });
             } else {
-                res.redirect("/register/success");
+                connection.query(query2, function(err2, rows2) {
+                    if (err2) {
+                        res.json({
+                            "Error2": err2
+                        });
+                    } else {
+                        var email = new sendgrid.Email();
+
+                        email.addTo(rows2[0].sEmail);
+                        email.setFrom("608proyecto@gmail.com");
+                        email.setSubject("Activación de tu cuenta BURN IT!");
+                        email.setHtml('<h2><strong><span style="color:#ff9933;"><span style="font-family:arial,helvetica,sans-serif;">Se ha completado el registro de tu cuenta en burn it!<br />Solo falta activar tu cuenta</span></span></strong></h2><h2><span style="font-size:14px;"><strong><span style="font-family:arial,helvetica,sans-serif;">Da click en el sigueinte link para completar la activacion</span></strong></span></h2><A HREF="http://localhost:3000/api/activate/' + rows2[0].id_user + '">Activa tu cuenta </A>');
+
+                        sendgrid.send(email);
+                        res.redirect("/register/success");
+                    }
+
+                });
+
             }
         });
     });
@@ -68,7 +116,7 @@ REST_ROUTER.prototype.handleRoutes = function(api_router, connection, md5, sessi
         });
     });
 
-        api_router.get("/users/perfil/:id", function(req, res) {
+    api_router.get("/users/perfil/:id", function(req, res) {
         var query = "SELECT sName, sPerfil, sDesc, fNacimiento  FROM ?? WHERE ??=?";
         var table = ["users", "id_user", req.params.id];
         query = mysql.format(query, table);
@@ -205,7 +253,7 @@ REST_ROUTER.prototype.handleRoutes = function(api_router, connection, md5, sessi
             }
         });
     });
-api_router.delete("/posts/delete/all", function(req, res) {
+    api_router.delete("/posts/delete/all", function(req, res) {
         res.header("Access-Control-Allow-Origin", "*");
         res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
         res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
@@ -238,7 +286,7 @@ api_router.delete("/posts/delete/all", function(req, res) {
         });
     });
 
-api_router.get("/posts/perfil/:id_user", function(req, res) {
+    api_router.get("/posts/perfil/:id_user", function(req, res) {
         res.header("Access-Control-Allow-Origin", "*");
         res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
         res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
@@ -405,7 +453,7 @@ api_router.get("/posts/perfil/:id_user", function(req, res) {
     });
     /*
 CREATE PROCEDURE addLike(user_id INT, post_id INT, type_i INT) BEGIN DELETE FROM likes WHERE id_user = user_id; INSERT INTO likes (id_post,i_type,id_user) VALUES (post_id,type_i,user_id); END
- */
+*/
     api_router.post("/likes/add", function(req, res) {
         res.header("Access-Control-Allow-Origin", "*");
         res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
@@ -506,7 +554,7 @@ SELECT IF( EXISTS(SELECT i_type FROM likes WHERE id_post = 30 AND id_user = 1),,
           'Comentarios:sComentario', c.id_user AS 'Comentarios:id_user', u1.sName AS userPost, u2.sName AS 'Comentarios:userCom' FROM posts 
           p LEFT JOIN comentarios c ON p.id_post = c.id_post INNER JOIN users u1 ON p.id_user = u1.id_user LEFT JOIN users u2 ON 
            c.id_user = u2.id_user WHERE NOW() BETWEEN p.fFecha AND p.fVencimiento ORDER BY p.id_post DESC, c.id_comentario";
-        */
+           */
 //PASSWORD SECURITY USE md5(req.body.password)
 /*
     api_router.put("/sales/items/update",function(req,res){

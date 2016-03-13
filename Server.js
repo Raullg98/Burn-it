@@ -62,7 +62,7 @@ Server.prototype.configureExpress = function(connection) {
     app.use('/api', api_router);
 
 
-    var rest_router = new rest.REST_ROUTER(api_router, connection, md5,session);
+    var rest_router = new rest.REST_ROUTER(api_router, connection, md5, session);
     self.startServer();
 }
 
@@ -71,9 +71,9 @@ Server.prototype.startServer = function() {
         console.log("All right ! I am alive at Port 3000.");
     });
     app.use(express.static('public'));
-   
 
-    
+
+
 }
 
 Server.prototype.stop = function(err) {
@@ -81,131 +81,133 @@ Server.prototype.stop = function(err) {
     process.exit(1);
 }
 
- app.use(session({
-        secret: "Proyecto608020498",
-        resave: false,
-        saveUninitialized: false
+app.use(session({
+    secret: "Proyecto608020498",
+    resave: false,
+    saveUninitialized: false
 
-    }));
+}));
 
 app.get("/", function(req, res) {
 
-        console.log("ENTRA A /");
-        if (req.session.userid !== undefined) {
-            //res.send(String(req.session.userid));
-            res.redirect("/dashboard")
-        } else {
-            
-            
-            res.sendFile(__dirname + '/public/login.html');
-        }
-        
+    console.log("ENTRA A /");
+    if (req.session.userid !== undefined) {
+        //res.send(String(req.session.userid));
+        res.redirect("/dashboard")
+    } else {
 
-    });
+
+        res.sendFile(__dirname + '/public/login.html');
+    }
+
+
+});
 app.get("/register", function(req, res) {
 
-        console.log("ENTRA A /");
-        if (req.session.userid !== undefined) {
-            //res.send(String(req.session.userid));
-            res.redirect("/dashboard")
-        } else {
-            
-            
-            res.sendFile(__dirname + '/public/registro.html');
-        }
-        
+    console.log("ENTRA A /");
+    if (req.session.userid !== undefined) {
+        //res.send(String(req.session.userid));
+        res.redirect("/dashboard")
+    } else {
 
-    });
-    app.get("/dashboard", function(req, res) {
 
-        console.log("ENTRA A /dashboard");
-        if (req.session.userid !== undefined) {
-            //res.send(String(req.session.userid));
-            res.sendFile(__dirname + '/public/dashboard.html');
-        } else {
-            
-            
-            
-            res.redirect("/")
-        }
+        res.sendFile(__dirname + '/public/registro.html');
+    }
 
-    });
-    app.get("/register/success", function(req, res) {
 
-        if (req.session.userid !== undefined) {
-            //res.send(String(req.session.userid));
-            res.sendFile(__dirname + '/public/dashboard.html');
-        } else {
-            
-            res.sendFile(__dirname + '/public/login-success.html')
-        }
+});
+app.get("/dashboard", function(req, res) {
 
-    });
-    app.get("/perfil", function(req, res) {
+    console.log("ENTRA A /dashboard");
+    if (req.session.userid !== undefined) {
+        //res.send(String(req.session.userid));
+        res.sendFile(__dirname + '/public/dashboard.html');
+    } else {
 
-       
-        if (req.session.userid !== undefined) {
-            res.redirect("/perfil/"+req.session.userid)
-        } else {
-            
-            
-            
-            res.redirect("/")
-        }
 
-    });
-      app.get("/config", function(req, res) {
 
-       
-        if (req.session.userid !== undefined) {
-            //res.send(String(req.session.userid));
-            res.sendFile(__dirname + '/public/config.html');
-        } else {
-            
-            
-            
-            res.redirect("/")
-        }
+        res.redirect("/")
+    }
 
-    });
+});
+app.get("/register/success", function(req, res) {
+
+
+    if (req.session.userid !== undefined) {
+        //res.send(String(req.session.userid));
+        res.sendFile(__dirname + '/public/dashboard.html');
+    } else {
+
+        res.sendFile(__dirname + '/public/login-success.html');
+    }
+
+});
+
+app.get("/perfil", function(req, res) {
+
+
+    if (req.session.userid !== undefined) {
+        res.redirect("/perfil/" + req.session.userid)
+    } else {
+
+
+
+        res.redirect("/")
+    }
+
+});
+app.get("/config", function(req, res) {
+
+
+    if (req.session.userid !== undefined) {
+        //res.send(String(req.session.userid));
+        res.sendFile(__dirname + '/public/config.html');
+    } else {
+
+
+
+        res.redirect("/")
+    }
+
+});
 app.get("/login/error", function(req, res) {
 
-       
-        if (req.session.userid !== undefined) {
-            //res.send(String(req.session.userid));
-            res.redirect("/")
-        } else {
-            
-            res.sendFile(__dirname + '/public/login-error.html');
-        }
 
-    });
+    if (req.session.userid !== undefined) {
+        //res.send(String(req.session.userid));
+        res.redirect("/")
+    } else {
+
+        res.sendFile(__dirname + '/public/login-error.html');
+    }
+
+});
 
 app.get("/dashboard/", function(req, res) {
 
-       
-       app.redirect("/dashboard");
-    });
+
+    app.redirect("/dashboard");
+});
 app.get("/perfil/:id", function(req, res) {
 
-       
-       if (req.session.userid !== undefined) {
-            //res.send(String(req.session.userid));
-            res.sendFile(__dirname + '/public/cperfil2.html');
-        } else {         
-            res.redirect("/")
-        }
-    });
+
+    if (req.session.userid !== undefined) {
+        //res.send(String(req.session.userid));
+        res.sendFile(__dirname + '/public/cperfil2.html');
+    } else {
+        res.redirect("/")
+    }
+});
 app.get("/logout", function(req, res) {
 
-       
-       if (req.session.userid !== undefined) {
-            //res.send(String(req.session.userid));
-            req.session.destroy(function(err) {
-                res.redirect("/");
-            })
-        } else {         
-            res.redirect("/")
-        }
-    });
+
+    if (req.session.userid !== undefined) {
+        //res.send(String(req.session.userid));
+        req.session.destroy(function(err) {
+            res.redirect("/");
+        })
+    } else {
+        res.redirect("/")
+    }
+});
 new Server();
